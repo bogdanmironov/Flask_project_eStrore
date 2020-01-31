@@ -4,6 +4,7 @@ from flask import Flask
 from flask import request
 
 from model.user import User
+from model.ad import Advert
 
 from security.basicAuth import init_auth, get_password_hash
 from error import register_error_handlers
@@ -60,6 +61,64 @@ def update_user(id):
 @auth.login_required
 def login():
     return 'Hello, {}!'.format(auth.username())
+
+@app.route("/ads", methods = ["POST"])
+@auth.login_required
+def post_ad():
+    data = request.get_json(force=True, silent=True)
+
+    if data == None:
+        return "Bad request", 400
+
+    user = User.find_by_username(auth.username())
+
+    advert = Advert(data["title"], data["description"], data["price"], data["creation_date"], True, user.get_id(), buyer_id = None)
+    advert.create()
+
+    return json.dumps(advert.to_dict()), 201
+
+@app.route("/ads", methods = ["GET"])
+def get_ads():
+    ads = {"advertisements": []}
+    
+    for ad in Advert.get_ads():
+        ads["advertisements"].append(ad.to_dict())
+
+    return json.dumps(ads)
+
+
+@app.route("/ads/<id>", methods = ["GET"])
+def get_ad(id):
+    return json.dumps(Advert.get_ad(id).to_dict())
+
+@app.route("/ads/<id>", methods = ["DELETE"])
+@auth.login_required
+def delete_ad(id):
+    user = User.find_by_username(auth.username())
+
+    Advert.delete(id, user.get_id())
+    return 'Success', 200
+
+@app.route("/ads/<id>", methods = ["PATCH"])
+@auth.login_required
+def update_ad(id):
+    data = request.get_json(force=True, silent=True)
+    user_id = User.find_by_username(auth.username()).get_id()
+
+    Advert.update_advert(Advert(data["title"], data["description"], data["price"], data["creation_date"], True, user_id), id)
+
+    return "Success", 200
+
+
+@app.route("/ads/<id>/buy", methods = ["PATCH"])
+@auth.login_required
+def buy_ad(id):
+    data = request.get_json(force=True, silent=True)
+    user_id = User.find_by_username(auth.username()).get_id()
+
+    Advert.update_advert(Advert(data["title"], data["description"], data["price"], data["creation_date"], False, user_id, user_id), id) #fisrt user_id is not used
+
+    return "Success", 200
 
 if __name__ == '__main__':
     app.run()

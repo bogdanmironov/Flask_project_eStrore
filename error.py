@@ -16,10 +16,10 @@ class NotFound(Exception):
     def to_dict(self):
         return { "message": self.message }
 
-class Unauthorised(Exception):
+class Forbidden(Exception):
     def __init__(self, message):
         self.message = message
-        self.status_code = 401
+        self.status_code = 403
 
     def to_dict(self):
         return { "message": self.message }
@@ -39,5 +39,5 @@ def __handle_error(error):
 def register_error_handlers(app):
     app.register_error_handler(BadRequest, __handle_error)
     app.register_error_handler(NotFound, __handle_error)
-    app.register_error_handler(Unauthorised, __handle_error)
+    app.register_error_handler(Forbidden, __handle_error)
     app.register_error_handler(UserExists, __handle_error)

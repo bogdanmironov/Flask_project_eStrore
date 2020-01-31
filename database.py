@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS advert
     (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
-        desription TEXT,
+        description TEXT,
         price REAL,
         creation_date TEXT,
         is_active INTEGER,
-        buyer TEXT,
+        buyer_id TEXT,
         user_id INTEGER
     )''')
 

@@ -27,13 +27,14 @@ class User(object):
 
     def update_user(self):
         user = User.get_user(self.id)
-
-        print(user.email)
-
+        
         with SQLite() as db:
             db.execute('UPDATE user SET email=?, username=?, address=?, phone=? WHERE id=?', (user.email, self.username, self.address, self.phone, self.id))
 
         return self
+
+    def get_id(self):
+        return self.id
 
 
     @staticmethod
