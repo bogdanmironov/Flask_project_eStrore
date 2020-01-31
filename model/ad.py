@@ -58,7 +58,7 @@ class Advert(object):
         with SQLite() as db:
             users = db.execute(query).fetchall()
 
-        return [Advert(*row) for row in users]
+        return [Advert(*ad) for ad in ads]
             
     @staticmethod
     def get_ad(ad_id):

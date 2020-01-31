@@ -1,5 +1,6 @@
 from database import SQLite
 from error import NotFound
+from model.ad import Advert
 
 class User(object):
     
@@ -27,7 +28,7 @@ class User(object):
 
     def update_user(self):
         user = User.get_user(self.id)
-        
+
         with SQLite() as db:
             db.execute('UPDATE user SET email=?, username=?, address=?, phone=? WHERE id=?', (user.email, self.username, self.address, self.phone, self.id))
 
@@ -78,3 +79,12 @@ class User(object):
             raise NotFound('User({}) was not found'.format(username))
 
         return User(*user)
+
+    @staticmethod
+    def get_sold_ads(user_id):
+        with SQLite() as db:
+            result = db.execute('SELECT title, description, price, creation_date, is_active, user_id, buyer_id, id FROM advert WHERE user_id = ?', (user_id, ))
+
+        sold = result.fetchall()
+
+        return [Advert(*ad) for ad in sold]

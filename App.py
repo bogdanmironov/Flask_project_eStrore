@@ -120,5 +120,16 @@ def buy_ad(id):
 
     return "Success", 200
 
+@app.route('/sold')
+@auth.login_required
+def check_sold():
+    result = {'sold': []}
+    user_id = User.find_by_username(auth.username()).get_id()
+
+    for ad in User.get_sold_ads(user_id):
+        result['sold'].append(ad.to_dict())
+
+    return json.dumps(result)
+
 if __name__ == '__main__':
     app.run()
