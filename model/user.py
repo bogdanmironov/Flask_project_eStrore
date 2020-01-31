@@ -77,5 +77,3 @@ class User(object):
             raise NotFound('User({}) was not found'.format(username))
 
         return User(*user)
-
-#TO_DO PATCH
