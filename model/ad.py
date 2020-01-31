@@ -56,7 +56,7 @@ class Advert(object):
         query = 'SELECT title, description, price, creation_date, is_active, user_id, buyer_id, id FROM advert'
         
         with SQLite() as db:
-            users = db.execute(query).fetchall()
+            ads = db.execute(query).fetchall()
 
         return [Advert(*ad) for ad in ads]
             
