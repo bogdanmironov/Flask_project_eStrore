@@ -67,5 +67,15 @@ class User(object):
 
         return User(*user)
 
+    @staticmethod
+    def find_by_username(username):
+        with SQLite() as db:
+            result = db.execute('SELECT email, username, password, address, phone, id FROM user WHERE username = ?', (username, ))
+
+        user = result.fetchone()
+        if user is None:
+            raise NotFound('User({}) was not found'.format(username))
+
+        return User(*user)
 
 #TO_DO PATCH

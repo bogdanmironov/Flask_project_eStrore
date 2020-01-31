@@ -56,5 +56,10 @@ def update_user(id):
 
     return 'Success', 200
 
+@app.route('/login')
+@auth.login_required
+def login():
+    return 'Hello, {}!'.format(auth.username())
+
 if __name__ == '__main__':
     app.run()
